@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聖蓮宮 台南道場 - 排班資訊</title>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: "Microsoft JhengHei", "Noto Serif TC", sans-serif; background-color: #fdfcf0; background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'); margin: 0; padding: 10px; color: #1a1a1a; }
+        .container { max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
+        .header-section { text-align: center; margin: 40px 0 20px 0; position: relative; }
+        .page-title { font-family: 'Zhi Mang Xing', cursive; font-size: 5.5em; color: #1a1a1a; margin: 0; line-height: 1.1; text-shadow: 2px 2px 4px rgba(0,0,0,0.15); display: inline-block; }
+        .seal { display: inline-block; width: 45px; height: 45px; border: 2px solid #8b0000; color: #8b0000; font-size: 16px; line-height: 1.2; padding: 4px; font-weight: bold; vertical-align: top; margin-top: 20px; margin-left: 15px; transform: rotate(-8deg); background: rgba(139, 0, 0, 0.05); }
+        .page-subtitle { font-family: 'Noto Serif TC', serif; font-size: 1.4em; color: #555; letter-spacing: 0.8em; margin-top: 5px; text-indent: 0.8em; font-weight: 600; }
+        .search-bar { display: flex; justify-content: center; gap: 25px; margin: 30px 0; flex-wrap: wrap; }
+        .search-bar select { padding: 10px 15px; border: none; border-bottom: 2px solid #2c3e50; background: transparent; font-family: 'Noto Serif TC', serif; font-size: 18px; color: #2c3e50; outline: none; cursor: pointer; min-width: 200px; }
+        #calendar { background: rgba(255, 255, 255, 0.85); padding: 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #e0dcc5; }
+        .event-display { font-size: 16px; font-weight: bold; white-space: pre; }
+        .legend { text-align: center; margin-bottom: 15px; font-size: 14px; color: #666; }
+        .dot { height: 12px; width: 12px; border-radius: 50%; display: inline-block; margin-left: 15px; vertical-align: middle; }
+        .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); overflow: hidden; }
+        .modal-content { position: relative; background: #fff; margin: 5vh auto; width: 90%; max-width: 480px; max-height: 85vh; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 50px rgba(0,0,0,0.3); }
+        .modal-header { padding: 20px; border-bottom: 1px solid #eee; text-align: center; background: #fafafa; }
+        .modal-body { padding: 25px; overflow-y: auto; flex-grow: 1; text-align: left; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; color: #bbb; z-index: 10; }
+        #m-photo { width: 100%; max-width: 300px; border-radius: 12px; margin: 0 auto 20px auto; display: block; border: 1px solid #eee; }
+        #m-note { background: #fdfdfd; padding: 15px; border-radius: 10px; line-height: 1.8; font-size: 17px; border-left: 4px solid #8e44ad; white-space: pre-wrap; }
+        @media (max-width: 768px) { .page-title { font-size: 3.2em; } .page-subtitle { font-size: 1.1em; letter-spacing: 0.3em; } .seal { width: 35px; height: 35px; font-size: 12px; margin-top: 10px; } .event-display { font-size: 14px; } .search-bar { gap: 10px; } .search-bar select { width: 100%; font-size: 16px; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-section">
+        <h1 class="page-title">聖蓮宮 台南道場</h1>
+        <div class="seal">台南<br>道場</div>
+        <div class="page-subtitle">排班資訊</div>
+    </div>
+    <div class="search-bar">
+        <select id="nameSelector"><option value="all">按姓名搜尋 (顯示全部)</option></select>
+        <select id="monthSelector"><option value="">快速跳轉月份</option></select>
+    </div>
+    <div id="calendar">
+        <div class="legend">
+            <span class="dot" style="background:#8e44ad;"></span> 聖務
+            <span class="dot" style="background:#3498db;"></span> 講經說法
+            <span class="dot" style="background:#e74c3c;"></span> 其他
+        </div>
+    </div>
+</div>
+<div id="infoModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="m-name" style="margin:0; font-family: 'Noto Serif TC'; color: #2c3e50;"></h2>
+        </div>
+        <div class="modal-body">
+            <img id="m-photo" src="" alt="照片">
+            <p style="font-size: 18px;"><strong>類別：</strong> <span id="m-shift" style="color: #8e44ad; font-weight: bold;"></span></p>
+            <p><strong>備註說明：</strong></p>
+            <div id="m-note"></div>
+            <div style="height:30px;"></div>
+        </div>
+    </div>
+</div>
+<script>
+    let allEvents = []; 
+    let calendar;
+
+    function closeModal() {
+        document.getElementById('infoModal').style.display = 'none';
+        document.getElementById('m-photo').src = "";
+    }
+
+    // URL 轉換函數
+    function linkify(text) {
+        const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return text.replace(urlPattern, function(url) {
+            return `<a href="${url}" target="_blank" style="color: #3498db; text-decoration: underline; word-break: break-all;">${url}</a>`;
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const monthSelector = document.getElementById('monthSelector');
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year <= currentYear + 1; year++) {
+            for (let month = 1; month <= 12; month++) {
+                let opt = document.createElement('option');
+                opt.value = `${year}-${String(month).padStart(2, '0')}-01`;
+                opt.innerText = `${year}年 ${month}月`;
+                monthSelector.appendChild(opt);
+            }
+        }
+
+        var calendarEl = document.getElementById('calendar');
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'zh-tw',
+            initialView: 'dayGridMonth',
+            headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth' },
+            aspectRatio: window.innerWidth < 768 ? 0.85 : 1.45,
+            events: function(fetchInfo, successCallback, failureCallback) {
+                if (allEvents.length > 0) {
+                    filterAndDisplay(successCallback);
+                } else {
+                    fetch('/api/events').then(res => res.json()).then(data => {
+                        allEvents = data;
+                        populateNameSelector(data);
+                        filterAndDisplay(successCallback);
+                    });
+                }
+            },
+            eventContent: function(arg) {
+                let dom = document.createElement('div');
+                dom.className = 'event-display';
+                let space = window.innerWidth < 768 ? " " : "　";
+                dom.innerHTML = `<span style="color:white;">${arg.event.title}${space}${arg.event.extendedProps.shift}</span>`;
+                return { domNodes: [dom] };
+            },
+            eventClick: function(info) {
+                const name = info.event.title.trim();
+                document.getElementById('m-name').innerText = name;
+                document.getElementById('m-shift').innerText = info.event.extendedProps.shift;
+                
+                // 處理並顯示備註連結
+                document.getElementById('m-note').innerHTML = linkify(info.event.extendedProps.note);
+
+                const photoImg = document.getElementById('m-photo');
+                photoImg.src = "/static/images/" + name + ".jpg";
+                photoImg.onerror = function() { this.src = "https://via.placeholder.com/300x300?text=無照片"; };
+                document.getElementById('infoModal').style.display = 'block';
+                document.querySelector('.modal-body').scrollTop = 0;
+            }
+        });
+        calendar.render();
+
+        function populateNameSelector(data) {
+            const nameSelector = document.getElementById('nameSelector');
+            const uniqueNames = [...new Set(data.map(e => e.title.trim()))].sort();
+            uniqueNames.forEach(name => {
+                if(name !== ""){
+                    let opt = document.createElement('option');
+                    opt.value = name; opt.innerText = name; nameSelector.appendChild(opt);
+                }
+            });
+        }
+        function filterAndDisplay(callback) {
+            const selectedName = document.getElementById('nameSelector').value;
+            let filtered = selectedName === 'all' ? allEvents : allEvents.filter(e => e.title.trim() === selectedName);
+            callback(filtered);
+        }
+        document.getElementById('nameSelector').addEventListener('change', () => calendar.refetchEvents());
+        document.getElementById('monthSelector').addEventListener('change', function() {
+            if (this.value) calendar.gotoDate(this.value);
+        });
+    });
+    document.addEventListener('keydown', (e) => { if(e.key === "Escape") closeModal(); });
+    window.onclick = (e) => { if(e.target.className === 'modal') closeModal(); };
+</script>
+</body>
+</html>
