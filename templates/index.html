@@ -10,85 +10,92 @@
         :root { --bg-color: #f9f7f2; --main-text: #2c2c2c; --accent-gold: #d4a373; }
         body { font-family: "Noto Serif TC", serif; background-color: var(--bg-color); margin: 0; padding: 10px; color: var(--main-text); }
         .container { max-width: 1200px; margin: 0 auto; }
-        
+
         /* --- 標題設計 --- */
         .header-section { text-align: center; margin: 30px 0; }
         .page-title { font-family: 'Zhi Mang Xing', cursive; font-size: 5.5em; margin: 0; }
-        .page-subtitle { 
-            font-family: 'Montserrat', sans-serif; 
-            font-size: 1.4rem;  /* 放大副標題 */
-            letter-spacing: 0.8em; 
-            color: var(--accent-gold); 
-            margin-top: -5px; 
-            text-transform: uppercase; 
+        .page-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;  
+            letter-spacing: 0.8em;
+            color: var(--accent-gold);
+            margin-top: -5px;
+            text-transform: uppercase;
             font-weight: 700;
         }
 
-        /* --- 響應式調整 --- */
+        /* --- 右下角懸浮 Memo --- */
+        .floating-memo {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 260px;
+            background: rgba(255, 253, 249, 0.95);
+            border-right: 5px solid var(--accent-gold); /* 改為右側邊框 */
+            padding: 15px;
+            box-shadow: -5px 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px 0 0 8px;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(212, 163, 115, 0.3);
+            border-right: 5px solid var(--accent-gold);
+        }
+        .memo-title { 
+            font-weight: 900; 
+            color: #8d4b3d; 
+            font-size: 1.1rem; 
+            margin-bottom: 8px; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 5px; 
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .memo-text { font-size: 0.9rem; line-height: 1.6; color: #444; }
+        .memo-text strong { color: var(--accent-gold); }
+
+        /* 響應式調整 */
         @media (max-width: 768px) {
             .page-title { font-size: 3.2rem; }
             .page-subtitle { font-size: 0.9rem; letter-spacing: 0.3em; }
             .header-section { margin: 15px 0 20px; }
+            /* 手機版將 Memo 改為相對位置，避免遮擋日曆內容 */
+            .floating-memo { 
+                position: relative; 
+                right: auto; 
+                bottom: auto; 
+                width: 90%; 
+                margin: 0 auto 20px; 
+                box-shadow: none;
+                border-radius: 8px;
+                border-right: 1px solid rgba(212, 163, 115, 0.3);
+                border-top: 5px solid var(--accent-gold);
+            }
         }
 
         /* 跑馬燈 */
         .marquee-bar { background: rgba(255,255,255,0.9); padding: 12px 0; border-radius: 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px; font-size: 1.6rem; border: 1px solid rgba(255,255,255,0.5); }
-        @media (max-width: 768px) { .marquee-bar { font-size: 1.2rem; } }
-
+        
         /* 選單控制 */
         .controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
         .custom-select { padding: 10px 18px; border-radius: 12px; border: 1.5px solid var(--accent-gold); background: white; font-family: inherit; font-size: 1rem; cursor: pointer; }
-
-        /* --- 日曆文字與色塊優化 --- */
-        .fc-event-title { 
-            font-size: 1.25rem !important; /* 加大人名文字 */
-            font-weight: 900 !important; 
-            letter-spacing: 1px;
-            padding: 3px 6px !important;
-            white-space: normal !important; /* 自動換行 */
-            line-height: 1.4 !important;
-        }
+        
+        /* 日曆文字優化 */
+        .fc-event-title { font-size: 1.25rem !important; font-weight: 900 !important; letter-spacing: 1px; padding: 3px 6px !important; white-space: normal !important; line-height: 1.4 !important; }
         .fc-daygrid-event { border-radius: 6px !important; margin-top: 2px !important; }
         .fc-col-header-cell-cushion { font-size: 1.1rem; font-weight: 900; }
         
-        @media (max-width: 768px) {
-            .fc-event-title { font-size: 0.95rem !important; }
-        }
-
-        /* 科儀活動特效 */
-        .fc-event-neon {
-            background: linear-gradient(45deg, #6a11cb 0%, #d4a373 100%) !important;
-            animation: neon-pulse 1.5s infinite alternate;
-        }
-        @keyframes neon-pulse { from { opacity: 0.85; } to { opacity: 1; } }
-
-        /* --- 彈窗智慧優化 --- */
+        /* 彈窗樣式 */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); }
-        .modal-content { 
-            position: relative; background: #fff; margin: 5vh auto; width: 92%; max-width: 500px; 
-            border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); 
-            max-height: 85vh; display: flex; flex-direction: column;
-        }
+        .modal-content { position: relative; background: #fff; margin: 5vh auto; width: 92%; max-width: 500px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 85vh; display: flex; flex-direction: column; }
         .modal-scroll-area { overflow-y: auto; flex: 1; }
-        .modal-scroll-area::-webkit-scrollbar { width: 6px; }
-        .modal-scroll-area::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
-
-        .close-btn { 
-            position: absolute; top: 12px; right: 18px; font-size: 30px; cursor: pointer; color: #888; z-index: 100;
-            background: rgba(255,255,255,0.8); width: 40px; height: 40px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* 圖片原始尺寸呈現 (不切割) */
+        .close-btn { position: absolute; top: 12px; right: 18px; font-size: 30px; cursor: pointer; color: #888; z-index: 100; background: rgba(255,255,255,0.8); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .photo-container { background: #f0f0f0; width: 100%; text-align: center; }
         #m-photo { max-width: 100%; height: auto; display: block; margin: 0 auto; }
-
         .modal-body { padding: 25px; text-align: center; }
         #m-name { font-size: 1.8rem; font-weight: 900; margin-bottom: 15px; }
         #m-shift { display: inline-block; padding: 6px 22px; border-radius: 50px; background: var(--accent-gold); color: white; font-weight: 700; margin-bottom: 20px; }
         #m-note { text-align: left; background: #fdfaf5; padding: 20px; border-radius: 15px; line-height: 1.8; border-left: 5px solid var(--accent-gold); white-space: pre-wrap; font-size: 1.05rem; }
-        #m-note a { color: #3498db; text-decoration: underline; }
-
         #calendar { background: white; padding: 20px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.02); }
     </style>
 </head>
@@ -104,11 +111,21 @@
         <div class="page-subtitle">Tainan Sanctuary</div>
     </div>
 
+    <div class="floating-memo">
+        <div class="memo-title">🏮 共修日資訊</div>
+        <div class="memo-text">
+            <strong>週三</strong> 晚上 7:00 開始共修<br><br>
+            <strong>週六 & 週日</strong><br>
+            14:00 - 15:00 課程<br>
+            約 15:30 聖務科儀與開始共修
+        </div>
+    </div>
+
     <div class="controls">
         <select id="nameSelector" class="custom-select"><option value="all">所有人員篩選</option></select>
         <select id="monthSelector" class="custom-select"><option value="">月份快速跳轉</option></select>
     </div>
-
+    
     <div id="calendar"></div>
 </div>
 
@@ -130,7 +147,6 @@
     let calendar;
     function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
     function linkify(t) { return t.replace(/(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig, u => `<a href="${u}" target="_blank">${u}</a>`); }
-
     function initMonthSelector() {
         const s = document.getElementById('monthSelector');
         const now = new Date();
@@ -183,5 +199,4 @@
     window.onclick = e => { if(e.target.className === 'modal') closeModal(); };
 </script>
 </body>
-</html>
 </html>
